@@ -62,5 +62,5 @@ app.post('/signup', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://db1.sz9hx.mongodb.net/?retryWrites=true&w=majority&appName=DB1`);
 });
