@@ -12,7 +12,33 @@ app.use(bodyParser.json());
 app.use(express.static('public')); // Serve static files from the public directory
 
 // Connect to MongoDB (replace 'your_connection_string' with your actual connection string)
-mongoose.connect('your_connection_string', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://joonasmagi:<uarkmmnZkoT85wfV>@db1.sz9hx.mongodb.net/?retryWrites=true&w=majority&appName=DB1";
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
+', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
