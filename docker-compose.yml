@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  mariadb:
+    image: mariadb
+    container_name: mariadb-container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Passw0rd
+      MYSQL_DATABASE: aedniku_abimees
+      MYSQL_USER: student
+      MYSQL_PASSWORD: Passw0rd
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+volumes:
+  mariadb_data:
