@@ -1,0 +1,69 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f9f9f9;
+}
+
+h1 {
+    text-align: left;
+    color: #333;
+}
+
+.plant-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 800px;
+    margin-left: 50px;
+}
+
+.plant-item {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.plant-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+}
+
+.plant-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.plant-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #222;
+}
+
+.plant-species {
+    font-size: 14px;
+    color: #555;
+}
+.new-plant-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745; /* roheline värv */
+    color: white;
+    border: none;
+    border-radius: 1%;
+    padding: 15px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.new-plant-btn:hover {
+    background-color: #218838; /* tumedam roheline hoveri puhul */
+}

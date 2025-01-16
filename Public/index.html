@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Plants</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+    <h1>My Plants</h1>
+    <div class="plant-list" id="plants-list">
+        <!-- Taimede nimekiri renderdatakse siia -->
+        <button class="new-plant-btn">New plant</button>
+    </div>
+</main>
+<script>
+    async function loadPlants() {
+        try {
+            const response = await fetch('/plants');
+            const plants = await response.json();
+
+            const plantsList = document.getElementById('plants-list');
+            plantsList.innerHTML = '';
+
+            plants.forEach(plant => {
+                const plantItem = document.createElement('div');
+                plantItem.className = 'plant-item';
+
+                const plantImage = document.createElement('img');
+                plantImage.src = plant.image_url || 'https://via.placeholder.com/50';
+                plantImage.alt = `${plant.name} photo`;
+
+                const plantInfo = document.createElement('div');
+                plantInfo.className = 'plant-info';
+
+                const plantName = document.createElement('div');
+                plantName.className = 'plant-name';
+                plantName.textContent = plant.name;
+
+                const plantSpecies = document.createElement('div');
+                plantSpecies.className = 'plant-species';
+                plantSpecies.textContent = plant.species || 'Unknown species';
+
+                plantInfo.appendChild(plantName);
+                plantInfo.appendChild(plantSpecies);
+
+                plantItem.appendChild(plantImage);
+                plantItem.appendChild(plantInfo);
+
+                plantsList.appendChild(plantItem);
+            });
+        } catch (error) {
+            console.error('Error loading plants:', error);
+        }
+    }
+
+    window.onload = loadPlants;
+</script>
+</body>
+</html>
