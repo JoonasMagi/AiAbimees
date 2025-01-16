@@ -12,15 +12,16 @@
     <div class="plant-list" id="plants-list">
         <!-- Taimede nimekiri renderdatakse siia -->
     </div>
-    <button class="new-plant-btn">New plant</button>
+    <button class="new-plant-btn">New Plant</button>
 </main>
 
-<!-- Modaal uue taime lisamiseks -->
-<div id="new-plant-modal" class="modal">
+<!-- Modaal uue taime lisamiseks või muutmiseks -->
+<div id="plant-modal" class="modal">
     <div class="modal-content">
         <span class="close-button">&times;</span>
-        <h2>Add a New Plant</h2>
+        <h2 id="modal-title">Add/Edit Plant</h2>
         <form id="plant-form" enctype="multipart/form-data">
+            <input type="hidden" id="plant-id" name="id">
             <label for="name">Plant Name:</label>
             <input type="text" id="name" name="name" required>
             <br><br>

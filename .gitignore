@@ -1,0 +1,6 @@
+/.idea
+/node_modules
+.env
+docker-compose.yml
+.gitignore
+package-lock.json

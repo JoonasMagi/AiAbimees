@@ -35,13 +35,13 @@ DB_HOST=localhost<br>
 DB_PORT=3306<br>
 DB_USER=user<br>
 DB_PASSWORD=password<br>
-DB_NAME=aedniku_abimees<br>
+DB_NAME=aiabimees<br>
 SERVER_PORT=4000<br>
 
 Initialize the database:
 If you have a dump.sql file with the database schema and initial data, you can initialize the database using the following command:
 
-mysql -u user -p aedniku_abimees < dump.sql
+mysql -u user -p aiabimees < dump.sql
 
 Replace dump.sql with the path to your database dump file.
 
@@ -57,7 +57,7 @@ http://localhost:4000
 
 ### Usage
 
-
+Run npm start to start the server.
 Navigate to the /plants page after signing in.
 View your list of plants, including their names, species, and images.
 

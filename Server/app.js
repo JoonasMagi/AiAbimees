@@ -29,7 +29,7 @@ db.connect((err) => {
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(fileUpload());
+app.use(fileUpload(undefined));
 
 // Teeninda staatilised failid kaustast 'uploads'
 app.use(express.static(path.join(__dirname, '../uploads')));
@@ -72,7 +72,7 @@ app.post('/add-plant', (req, res) => {
             VALUES (?, ?, ?, ?, ?)
         `;
 
-        db.query(sql, [name, species, type, description, imageUrl], (err,) => {
+        db.query(sql, [name, species, type, description, imageUrl], (err) => {
             if (err) {
                 console.error('Database error:', err);
                 return res.status(500).send('Error inserting plant data');
@@ -92,10 +92,30 @@ app.get('/plants', (req, res) => {
         res.json(results);
     });
 });
+app.put('/plants/:id', (req, res) => {
+    const {id} = req.params;
+    const {name, species, type, description} = req.body;
 
+    const sql = `
+        UPDATE plants
+        SET name        = ?,
+            species     = ?,
+            type        = ?,
+            description = ?
+        WHERE id = ?
+    `;
+
+    db.query(sql, [name, species, type, description, id], (err) => {
+        if (err) {
+            console.error('Database error:', err);
+            res.status(500).send('Error updating plant');
+        } else {
+            res.status(200).send('Plant updated successfully');
+        }
+    });
+});
 
 // Käivita server
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
-console.log()
