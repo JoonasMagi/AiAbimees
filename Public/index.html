@@ -11,51 +11,46 @@
     <h1>My Plants</h1>
     <div class="plant-list" id="plants-list">
         <!-- Taimede nimekiri renderdatakse siia -->
-        <button class="new-plant-btn">New plant</button>
     </div>
+    <button class="new-plant-btn">New plant</button>
 </main>
-<script>
-    async function loadPlants() {
-        try {
-            const response = await fetch('/plants');
-            const plants = await response.json();
 
-            const plantsList = document.getElementById('plants-list');
-            plantsList.innerHTML = '';
+<!-- Modaal uue taime lisamiseks -->
+<div id="new-plant-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Add a New Plant</h2>
+        <form id="plant-form" enctype="multipart/form-data">
+            <label for="name">Plant Name:</label>
+            <input type="text" id="name" name="name" required>
+            <br><br>
 
-            plants.forEach(plant => {
-                const plantItem = document.createElement('div');
-                plantItem.className = 'plant-item';
+            <label for="species">Species:</label>
+            <input type="text" id="species" name="species">
+            <br><br>
 
-                const plantImage = document.createElement('img');
-                plantImage.src = plant.image_url || 'https://via.placeholder.com/50';
-                plantImage.alt = `${plant.name} photo`;
+            <label for="type">Type:</label>
+            <select id="type" name="type">
+                <option value="flower">Flower</option>
+                <option value="vegetable">Vegetable</option>
+                <option value="tree">Tree</option>
+                <option value="herb">Herb</option>
+            </select>
+            <br><br>
 
-                const plantInfo = document.createElement('div');
-                plantInfo.className = 'plant-info';
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" cols="50"></textarea>
+            <br><br>
 
-                const plantName = document.createElement('div');
-                plantName.className = 'plant-name';
-                plantName.textContent = plant.name;
+            <label for="plant-picture">Add Picture:</label>
+            <input type="file" id="plant-picture" name="plant-picture" accept="image/*">
+            <br><br>
 
-                const plantSpecies = document.createElement('div');
-                plantSpecies.className = 'plant-species';
-                plantSpecies.textContent = plant.species || 'Unknown species';
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
 
-                plantInfo.appendChild(plantName);
-                plantInfo.appendChild(plantSpecies);
-
-                plantItem.appendChild(plantImage);
-                plantItem.appendChild(plantInfo);
-
-                plantsList.appendChild(plantItem);
-            });
-        } catch (error) {
-            console.error('Error loading plants:', error);
-        }
-    }
-
-    window.onload = loadPlants;
-</script>
+<script src="script.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 -- enable the sandbox mode */
 -- MariaDB dump 10.19  Distrib 10.11.8-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: 127.0.0.1    Database:aiabimees
+-- Host: 127.0.0.1    Database:
 -- ------------------------------------------------------
 -- Server version	11.6.2-MariaDB-ubu2404
 
@@ -17,12 +17,12 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Current Database: `aiabimees`
+-- Current Database: `aedniku_abimees`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `aiabimees` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `aedniku_abimees` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci */;
 
-USE `aiabimees`;
+USE `aedniku_abimees`;
 
 --
 -- Table structure for table `ActuatorOutputs`
