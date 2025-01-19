@@ -283,7 +283,7 @@ CREATE TABLE `plants` (
 
 LOCK TABLES `plants` WRITE;
 /*!40000 ALTER TABLE `plants` DISABLE KEYS */;
-INSERT INTO `plants` (`id`, `name`, `species`, `created_at`, `image_url`, `type`, `description`) VALUES (1,'Aloe Vera','Succulent','2024-12-26 14:35:15','https://via.placeholder.com/50',NULL,NULL),
+INSERT INTO `plants` (`id`, `name`, `species`, `created_at`, image_url, `type`, `description`) VALUES (1,'Aloe Vera','Succulent','2024-12-26 14:35:15','https://via.placeholder.com/50',NULL,NULL),
                                                                                                         (2,'Basil','Herb','2024-12-26 14:35:15','https://via.placeholder.com/50',NULL,NULL),
                                                                                                         (3,'Aloe Vera','Succulent','2025-01-05 09:23:17','https://via.placeholder.com/50',NULL,NULL),
                                                                                                         (4,'Basil','Herb','2025-01-05 09:23:17','https://via.placeholder.com/50',NULL,NULL),

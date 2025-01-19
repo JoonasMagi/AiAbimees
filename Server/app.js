@@ -7,7 +7,7 @@ const fileUpload = require('express-fileupload');
 dotenv.config();
 
 const app = express();
-const port = process.env.SERVER_PORT || 4000; // Võtab porta `.env` failist või kasutab vaikimisi 4000
+const port = process.env.SERVER_PORT || 4000;
 
 // MariaDB ühenduse loomine
 const db = mysql.createConnection({
@@ -20,7 +20,7 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
     if (err) {
-        console.error('Error connecting to MariaDB:', err);
+        console.error('Error connecting to MariaDB:', err.message);
         process.exit(1);
     }
     console.log('Connected to MariaDB');
@@ -28,29 +28,27 @@ db.connect((err) => {
 
 // Middleware
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
-app.use(fileUpload(undefined));
+app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload());
 
-// Teeninda staatilised failid kaustast 'uploads'
-app.use(express.static(path.join(__dirname, '../uploads')));
+// Staatiliste failide teenindamine
 app.use(express.static(path.join(__dirname, '../public')));
 
 // API, et saada taimede nimekiri
 app.get('/plants', (req, res) => {
-    const sql = 'SELECT * FROM plants';
+    const sql = 'SELECT * FROM plants WHERE is_deleted = 0';
     db.query(sql, (err, results) => {
         if (err) {
-            console.error('Database error:', err);
-            res.status(500).send('Database error');
-        } else {
-            res.json(results);
+            console.error('Database error:', err.message);
+            return res.status(500).send('Database error');
         }
+        res.json(results);
     });
 });
 
 // Taime lisamise lõpp-punkt
 app.post('/add-plant', (req, res) => {
-    const {name, species, type, description} = req.body;
+    const { name, species, type, description } = req.body;
 
     if (!req.files || !req.files['plant-picture']) {
         console.error('No picture uploaded');
@@ -62,7 +60,7 @@ app.post('/add-plant', (req, res) => {
 
     file.mv(uploadPath, (err) => {
         if (err) {
-            console.error('Error uploading file:', err);
+            console.error('Error uploading file:', err.message);
             return res.status(500).send('Error uploading file');
         }
 
@@ -74,7 +72,7 @@ app.post('/add-plant', (req, res) => {
 
         db.query(sql, [name, species, type, description, imageUrl], (err) => {
             if (err) {
-                console.error('Database error:', err);
+                console.error('Database error:', err.message);
                 return res.status(500).send('Error inserting plant data');
             }
             res.status(200).send('Plant added successfully');
@@ -82,36 +80,58 @@ app.post('/add-plant', (req, res) => {
     });
 });
 
-app.get('/plants', (req, res) => {
-    const sql = 'SELECT * FROM plants';
-    db.query(sql, (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).send('Error fetching plants');
-        }
-        res.json(results);
-    });
-});
+// Taime muutmise lõpp-punkt
 app.put('/plants/:id', (req, res) => {
-    const {id} = req.params;
-    const {name, species, type, description} = req.body;
+    const { id } = req.params;
+    const { name, species, type, description } = req.body;
+
+    const imageUrl = req.files && req.files['plant-picture']
+        ? `/uploads/${req.files['plant-picture'].name}`
+        : null;
+
+    if (req.files && req.files['plant-picture']) {
+        const file = req.files['plant-picture'];
+        const uploadPath = path.join(__dirname, '../public/uploads/', file.name);
+
+        file.mv(uploadPath, (err) => {
+            if (err) {
+                console.error('Error uploading file:', err.message);
+                return res.status(500).send('Error uploading file');
+            }
+        });
+    }
 
     const sql = `
         UPDATE plants
-        SET name        = ?,
-            species     = ?,
-            type        = ?,
-            description = ?
+        SET name = ?, species = ?, type = ?, description = ?, image_url = COALESCE(?, image_url)
         WHERE id = ?
     `;
 
-    db.query(sql, [name, species, type, description, id], (err) => {
+    db.query(sql, [name, species, type, description, imageUrl, id], (err) => {
         if (err) {
-            console.error('Database error:', err);
-            res.status(500).send('Error updating plant');
-        } else {
-            res.status(200).send('Plant updated successfully');
+            console.error('Database error:', err.message);
+            return res.status(500).send('Error updating plant');
         }
+        res.status(200).send('Plant updated successfully');
+    });
+});
+
+// Taime kustutamise lõpp-punkt
+app.delete('/plants/:id', (req, res) => {
+    const { id } = req.params;
+
+    const sql = `
+        UPDATE plants
+        SET is_deleted = 1
+        WHERE id = ?
+    `;
+
+    db.query(sql, [id], (err) => {
+        if (err) {
+            console.error('Database error:', err.message);
+            return res.status(500).send('Error deleting plant');
+        }
+        res.status(200).send('Plant moved to bin');
     });
 });
 

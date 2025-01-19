@@ -13,7 +13,7 @@ h1 {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    max-width: 150px;
+    max-width: 1000px;
     margin-left: 50px;
 }
 
@@ -115,7 +115,7 @@ label {
 }
 
 textarea, select, input[type="file"] {
-    width: 50%;
+    width: 100%;
     padding: 8px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
@@ -135,4 +135,29 @@ textarea, select, input[type="file"] {
 
 .submit-button:hover {
     background-color: #218838;
+}
+.plant-description {
+    width: 100%;
+    height: 60px;
+    margin-top: 10px;
+    resize: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+    background-color: #f9f9f9;
+}
+.delete-plant-btn {
+    background-color: grey;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-plant-btn:hover {
+    background-color: darkgrey;
 }
