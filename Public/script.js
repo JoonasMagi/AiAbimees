@@ -1,209 +1,206 @@
-// MODAALI HALDAMINE
-const modal = document.getElementById('plant-modal');
-const closeButton = document.querySelector('.close-button');
-const openButton = document.querySelector('.new-plant-btn');
-
-// Sulge modaal, kui klikitakse X-nuppu
-closeButton.addEventListener('click', () => {
-    modal.style.display = 'none';
-});
-
-// Sulge modaal, kui klikitakse väljaspool seda
-window.addEventListener('click', (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-});
-
-// Ava modaal uue taime lisamiseks
-openButton.addEventListener('click', () => {
-    openModalForAdd();
-});
-
-function openModalForAdd() {
+document.addEventListener('DOMContentLoaded', () => {
+    // Get DOM elements
+    const modal = document.getElementById('universal-modal');
     const modalTitle = document.getElementById('modal-title');
-    const submitButton = document.querySelector('#plant-form button[type="submit"]');
+    const formFields = document.getElementById('form-fields');
+    const modalForm = document.getElementById('modal-form');
+    const modalSubmit = document.getElementById('modal-submit');
+    const modalClose = document.getElementById('modal-close');
+    const toggleSignup = document.getElementById('toggle-signup');
+    const authBtn = document.getElementById('auth-btn');
+    const errorMessage = document.getElementById('error-message');
 
-    modal.style.display = 'block';
-    modalTitle.textContent = 'Add a New Plant';
+    function showError(message) {
+        if (errorMessage) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+    }
 
-    // Tühjenda vorm
-    document.getElementById('plant-id').value = '';
-    document.getElementById('name').value = '';
-    document.getElementById('species').value = '';
-    document.getElementById('type').value = 'flower';
-    document.getElementById('description').value = '';
-    document.getElementById('plant-picture').value = '';
+    function clearError() {
+        if (errorMessage) {
+            errorMessage.textContent = '';
+            errorMessage.style.display = 'none';
+        }
+    }
 
-    submitButton.textContent = 'Submit';
-    document.getElementById('plant-form').onsubmit = async (event) => {
-        event.preventDefault();
+    function validateInputs() {
+        const username = document.getElementById('username')?.value.trim();
+        const password = document.getElementById('password')?.value;
 
-        const formData = new FormData(event.target);
+        if (!username || !password) {
+            showError('Username and password are required.');
+            return false;
+        }
+
+        if (username.length < 3) {
+            showError('Username must be at least 3 characters long.');
+            return false;
+        }
+
+        if (password.length < 8) {
+            showError('Password must be at least 8 characters long.');
+            return false;
+        }
+
+        return true;
+    }
+
+    function openModal(type) {
+        if (!modal || !formFields || !modalTitle || !modalSubmit) return;
+
+        modal.classList.remove('hidden');
+        clearError();
+
+        const isSignIn = type === 'signin';
+        modalTitle.textContent = isSignIn ? 'Sign In' : 'Sign Up';
+        modalSubmit.textContent = isSignIn ? 'Sign In' : 'Sign Up';
+
+        formFields.innerHTML = `
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="Enter username" 
+                    required 
+                    minlength="3" 
+                    maxlength="191"
+                    autocomplete="${isSignIn ? 'username' : 'new-username'}">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Enter password" 
+                    required 
+                    minlength="8" 
+                    maxlength="191"
+                    autocomplete="${isSignIn ? 'current-password' : 'new-password'}">
+            </div>
+        `;
+
+        setTimeout(() => {
+            const usernameInput = document.getElementById('username');
+            if (usernameInput) usernameInput.focus();
+        }, 100);
+    }
+
+    function closeModal() {
+        if (modal) {
+            modal.classList.add('hidden');
+            clearError();
+        }
+    }
+
+    function getCsrfToken() {
+        // First try to get from cookie
+        const token = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('XSRF-TOKEN='));
+
+        if (token) {
+            // Decode the URI component as cookies are often encoded
+            return decodeURIComponent(token.split('=')[1]);
+        }
+
+        // If not found in cookie, try to get from meta tag
+        const metaToken = document.querySelector('meta[name="csrf-token"]');
+        if (metaToken) {
+            return metaToken.getAttribute('content');
+        }
+
+        console.error('CSRF token not found in cookies or meta tags');
+        return null;
+    }
+
+    async function handleFormSubmit(e) {
+        e.preventDefault();
+        clearError();
+
+        if (!validateInputs()) return;
+
+        const isSignIn = modalTitle.textContent === 'Sign In';
+        const endpoint = isSignIn ? '/signin' : '/signup';
+
+        if (!modalSubmit) return;
+
+        modalSubmit.disabled = true;
+        const originalButtonText = modalSubmit.textContent;
+        modalSubmit.textContent = isSignIn ? 'Signing In...' : 'Signing Up...';
 
         try {
-            const response = await fetch('/add-plant', {
+            const token = getCsrfToken();
+            console.log('CSRF Token found:', !!token); // Debug log
+
+            if (!token) {
+                throw new Error('Security token not found. Please refresh the page.');
+            }
+
+            const response = await fetch(endpoint, {
                 method: 'POST',
-                body: formData,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-XSRF-TOKEN': token,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    username: document.getElementById('username')?.value.trim(),
+                    password: document.getElementById('password')?.value
+                })
             });
 
-            if (response.ok) {
-                alert('Plant added successfully!');
-                modal.style.display = 'none';
-                loadPlants(); // Laadi uuesti taimede nimekiri
+            // Log response status for debugging
+            console.log('Response status:', response.status);
+
+            const responseData = await response.json();
+
+            if (!response.ok) {
+                throw new Error(responseData.message || `${isSignIn ? 'Sign In' : 'Sign Up'} failed`);
+            }
+
+            if (isSignIn) {
+                window.location.href = '/plants';
             } else {
-                alert('Error adding plant');
+                showError('Sign up successful! Please sign in.');
+                setTimeout(() => openModal('signin'), 1500);
             }
         } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred while adding the plant');
+            console.error('Auth error:', error);
+            showError(error.message || 'An error occurred. Please try again.');
+        } finally {
+            modalSubmit.disabled = false;
+            modalSubmit.textContent = originalButtonText;
         }
-    };
-}
-
-// MODAALI AVAMINE MUUTMISEKS
-function openModalForEdit(plant) {
-    const modal = document.getElementById('plant-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const submitButton = document.querySelector('#plant-form button[type="submit"]');
-
-    modal.style.display = 'block';
-    modalTitle.textContent = 'Edit Plant';
-
-    // Täida vormi väljad
-    document.getElementById('plant-id').value = plant.id;
-    document.getElementById('name').value = plant.name;
-    document.getElementById('species').value = plant.species;
-    document.getElementById('type').value = plant.type;
-    document.getElementById('description').value = plant.description;
-    document.getElementById('plant-picture').value = '';
-
-    submitButton.textContent = 'Save Changes';
-
-    // Lisa vormi esitamise loogika
-    document.getElementById('plant-form').onsubmit = async (event) => {
-        event.preventDefault();
-
-        const formData = new FormData(event.target);
-        const plantId = formData.get('id');
-
-        try {
-            const response = await fetch(`/plants/${plantId}`, {
-                method: 'PUT',
-                body: formData, // Saadab ka faili
-            });
-
-            if (response.ok) {
-                alert('Plant updated successfully!');
-                modal.style.display = 'none';
-                loadPlants(); // Värskenda taimede nimekirja
-            } else {
-                alert('Error updating plant');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred while updating the plant');
-        }
-    };
-}
-
-
-function confirmDeletePlant(plant) {
-    const confirmation = confirm(`Are you sure you want to delete "${plant.name}"?`);
-    if (confirmation) {
-        deletePlant(plant.id);
     }
-}
 
+    // Set up event listeners
+    if (authBtn) {
+        authBtn.addEventListener('click', () => openModal('signin'));
+    }
 
-async function deletePlant(plantId) {
-    try {
-        const response = await fetch(`/plants/${plantId}`, {
-            method: 'DELETE',
+    if (modalForm) {
+        modalForm.addEventListener('submit', handleFormSubmit);
+    }
+
+    if (modalClose) {
+        modalClose.addEventListener('click', closeModal);
+    }
+
+    if (toggleSignup) {
+        toggleSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isCurrentlySignIn = modalTitle.textContent === 'Sign In';
+            openModal(isCurrentlySignIn ? 'signup' : 'signin');
         });
+    }
 
-        if (response.ok) {
-            alert('Plant moved to bin!');
-            loadPlants(); // Värskenda taimede nimekirja
-        } else {
-            alert('Error deleting plant');
+    // Close modal on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+            closeModal();
         }
-    } catch (error) {
-        console.error('Error deleting plant:', error);
-        alert('An error occurred while deleting the plant');
-    }
-}
-
-
-// TAIMEDE LAADIMINE
-async function loadPlants() {
-    console.log('Loading plants...');
-    try {
-        const response = await fetch('/plants');
-        const plants = await response.json();
-        console.log('Plants loaded:', plants);
-
-        const plantsList = document.getElementById('plants-list');
-        plantsList.innerHTML = '';
-
-        plants.forEach(plant => {
-            const plantItem = document.createElement('div');
-            plantItem.className = 'plant-item';
-
-            const plantImage = document.createElement('img');
-            plantImage.src = plant.image_url || 'https://via.placeholder.com/50';
-            plantImage.alt = `${plant.name} photo`;
-
-            const plantInfo = document.createElement('div');
-            plantInfo.className = 'plant-info';
-
-            const plantName = document.createElement('div');
-            plantName.className = 'plant-name';
-            plantName.textContent = plant.name;
-
-            // Lisa sündmus taime nimele
-            plantName.addEventListener('click', (event) => {
-                event.stopPropagation(); // Peatab sündmuse leviku
-                openModalForEdit(plant);
-            });
-
-            const plantSpecies = document.createElement('div');
-            plantSpecies.className = 'plant-species';
-            plantSpecies.textContent = plant.species || 'Unknown species';
-
-            const plantDescription = document.createElement('textarea');
-            plantDescription.className = 'plant-description';
-            plantDescription.value = plant.description || 'No description available';
-            plantDescription.readOnly = true;
-
-            const deleteButton = document.createElement('button');
-            deleteButton.className = 'delete-plant-btn';
-            deleteButton.textContent = 'Delete my plant';
-            deleteButton.style.backgroundColor = 'grey';
-            deleteButton.style.color = 'white';
-            deleteButton.style.marginLeft = '10px';
-
-            // Kustutamise sündmus
-            deleteButton.addEventListener('click', (event) => {
-                event.stopPropagation(); // Peatab sündmuse leviku
-                confirmDeletePlant(plant);
-            });
-
-            plantInfo.appendChild(plantName);
-            plantInfo.appendChild(plantSpecies);
-            plantInfo.appendChild(plantDescription);
-            plantInfo.appendChild(deleteButton);
-
-            plantItem.appendChild(plantImage);
-            plantItem.appendChild(plantInfo);
-
-            plantsList.appendChild(plantItem);
-        });
-    } catch (error) {
-        console.error('Error loading plants:', error);
-    }
-}
-
-
-// LAADI TAIMED LEHE AVAMISEL
-window.onload = loadPlants;
+    });
+});

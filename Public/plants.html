@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Aedniku Abimees - Manage your garden plants">
-    <title>Aedniku Abimees</title>
+    <title>My Plants - Aedniku Abimees</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,12 +13,25 @@
 <div class="header">
     <h1 class="header-title">Aedniku Abimees</h1>
     <div class="header-buttons">
-        <button id="auth-btn">Sign In</button>
+        <button id="new-plant-btn">Add New Plant</button>
+        <button id="logout-btn">Log Out</button>
     </div>
 </div>
 
 <main id="main" class="main-content">
     <div id="error-message" class="error-message" role="alert"></div>
+
+    <div id="loading-state" class="loading-state hidden">
+        <div class="spinner"></div>
+        <p>Loading plants...</p>
+    </div>
+
+    <div id="empty-state" class="empty-state hidden">
+        <p>You haven't added any plants yet.</p>
+        <p>Click the "Add New Plant" button to get started!</p>
+    </div>
+
+    <div id="plants-list" class="plants-list"></div>
 
     <div id="universal-modal" class="modal hidden">
         <div class="modal-content">
@@ -26,17 +39,12 @@
             <h2 id="modal-title"></h2>
             <form id="modal-form">
                 <div id="form-fields"></div>
-                <button type="submit" id="modal-submit"></button>
+                <button type="submit" id="modal-submit">Save Plant</button>
             </form>
-            <p>
-                <button id="toggle-signup" class="link-button">
-                    Don't have an account? Sign up here
-                </button>
-            </p>
         </div>
     </div>
 </main>
 
-<script src="script.js"></script>
+<script src="plants.js"></script>
 </body>
 </html>
