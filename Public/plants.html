@@ -1,50 +1,72 @@
 <!DOCTYPE html>
-<html lang="et">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Aedniku Abimees - Manage your garden plants">
     <title>My Plants - Aedniku Abimees</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<a href="#main" class="skip-link">Skip to main content</a>
-
-<div class="header">
-    <h1 class="header-title">Aedniku Abimees</h1>
-    <div class="header-buttons">
-        <button id="new-plant-btn">Add New Plant</button>
-        <button id="logout-btn">Log Out</button>
-    </div>
-</div>
-
-<main id="main" class="main-content">
-    <div id="error-message" class="error-message" role="alert"></div>
-
-    <div id="loading-state" class="loading-state hidden">
-        <div class="spinner"></div>
-        <p>Loading plants...</p>
-    </div>
-
-    <div id="empty-state" class="empty-state hidden">
-        <p>You haven't added any plants yet.</p>
-        <p>Click the "Add New Plant" button to get started!</p>
-    </div>
-
-    <div id="plants-list" class="plants-list"></div>
-
-    <div id="universal-modal" class="modal hidden">
-        <div class="modal-content">
-            <button id="modal-close" class="close-button" aria-label="Close modal">&times;</button>
-            <h2 id="modal-title"></h2>
-            <form id="modal-form">
-                <div id="form-fields"></div>
-                <button type="submit" id="modal-submit">Save Plant</button>
-            </form>
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">Aedniku Abimees</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/plants" class="active">My Plants</a></li>
+                    <li><button id="logout-btn" class="btn">Logout</button></li>
+                </ul>
+            </nav>
         </div>
-    </div>
-</main>
+    </header>
 
-<script src="plants.js"></script>
+    <main>
+        <section class="main-content">
+            <div class="container">
+                <div class="plants-header">
+                    <h1>My Plants</h1>
+                    <button id="add-plant-btn" class="btn btn-primary">Add New Plant</button>
+                </div>
+                
+                <!-- Reminders Section -->
+                <div class="reminders-container" id="reminders-container">
+                    <div class="reminders-header">
+                        <h2>Upcoming Reminders</h2>
+                        <button id="reminders-toggle" class="reminders-toggle">Hide Reminders</button>
+                    </div>
+                    <div id="reminders-loading" class="loading"></div>
+                    <div id="no-reminders-message" class="no-data-message" style="display: none;">
+                        No upcoming reminders. Add watering or fertilizing schedules to your plants to see reminders here.
+                    </div>
+                    <!-- Reminders will be inserted here by the Reminders component -->
+                </div>
+                
+                <!-- Plants Grid -->
+                <div id="loading-indicator" class="loading"></div>
+                <div id="no-plants-message" class="no-data-message" style="display: none;">
+                    You don't have any plants yet. Click the "Add New Plant" button to get started.
+                </div>
+                <div id="plant-container" class="plant-grid">
+                    <!-- Plants will be inserted here by the PlantList component -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Aedniku Abimees. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/js/components/modal.js"></script>
+    <script src="/js/services/api.js"></script>
+    <script src="/js/services/auth.js"></script>
+    <script src="/js/components/plantDetails.js"></script>
+    <script src="/js/components/plantList.js"></script>
+    <script src="/js/components/reminders.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>
