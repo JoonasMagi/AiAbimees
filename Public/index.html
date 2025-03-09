@@ -1,42 +1,85 @@
 <!DOCTYPE html>
-<html lang="et">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Aedniku Abimees - Manage your garden plants">
-    <title>Aedniku Abimees</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Aedniku Abimees - Gardener's Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<a href="#main" class="skip-link">Skip to main content</a>
-
-<div class="header">
-    <h1 class="header-title">Aedniku Abimees</h1>
-    <div class="header-buttons">
-        <button id="auth-btn">Sign In</button>
-    </div>
-</div>
-
-<main id="main" class="main-content">
-    <div id="error-message" class="error-message" role="alert"></div>
-
-    <div id="universal-modal" class="modal hidden">
-        <div class="modal-content">
-            <button id="modal-close" class="close-button" aria-label="Close modal">&times;</button>
-            <h2 id="modal-title"></h2>
-            <form id="modal-form">
-                <div id="form-fields"></div>
-                <button type="submit" id="modal-submit"></button>
-            </form>
-            <p>
-                <button id="toggle-signup" class="link-button">
-                    Don't have an account? Sign up here
-                </button>
-            </p>
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">Aedniku Abimees</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/" class="active">Home</a></li>
+                    <li><a href="/plants">My Plants</a></li>
+                    <li><button id="login-btn" class="btn">Sign In / Sign Up</button></li>
+                </ul>
+            </nav>
         </div>
-    </div>
-</main>
+    </header>
 
-<script src="script.js"></script>
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Welcome to Aedniku Abimees</h1>
+                <p>Your personal garden management assistant</p>
+                <a href="/plants" class="btn btn-lg">Start Garden Planning</a>
+            </div>
+        </section>
+
+        <section class="main-content">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Manage Your Garden</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Aedniku Abimees (Gardener's Assistant) helps you keep track of all your plants in one place. You can:</p>
+                        <ul>
+                            <li>Add your plants with detailed information</li>
+                            <li>Track planting dates and growing progress</li>
+                            <li>Set reminders for watering and fertilizing</li>
+                            <li>Monitor plant health and add notes</li>
+                            <li>Estimate harvest times for vegetable gardens</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Getting Started</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>To get started with Aedniku Abimees:</p>
+                        <ol>
+                            <li>Create an account or sign in</li>
+                            <li>Add your first plant with basic details</li>
+                            <li>Set up care reminders for watering and fertilizing</li>
+                            <li>Track your plant's growth over time</li>
+                        </ol>
+                        <p>It's that simple to start managing your garden effectively!</p>
+                    </div>
+                    <div class="card-footer">
+                        <button id="signup-btn" class="btn btn-primary">Sign Up Now</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Aedniku Abimees. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/js/components/modal.js"></script>
+    <script src="/js/services/api.js"></script>
+    <script src="/js/services/auth.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>
